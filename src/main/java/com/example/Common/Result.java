@@ -37,7 +37,7 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> error(String msg) {
         Result result = new Result();
-        result.msg = "登录失败\n"+msg;
+        result.msg = "登录失败，问题:"+msg;
         result.code = 0;
 
         return result;

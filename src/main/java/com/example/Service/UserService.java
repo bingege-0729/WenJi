@@ -1,7 +1,9 @@
 package com.example.Service;
 
-import com.example.DTO.LoginDTO;
-import com.example.DTO.RegisterDTO;
+import com.example.Common.Result;
+import com.example.DTO.UserLoginDTO;
+import com.example.DTO.UserRegistDTO;
+import com.example.VO.UserLoginVO;
 
 public interface UserService {
     /* *
@@ -9,6 +11,12 @@ public interface UserService {
      * @Param registerDTO
      * @Return
      */
-    void register(RegisterDTO registerDTO);
+    void register(UserRegistDTO userRegistDTO);
 
+    /* *
+     * 用户登录
+     * @Param loginDTO
+     * @Return
+     */
+    Result<UserLoginVO> login(UserLoginDTO userLoginDTO);
 }

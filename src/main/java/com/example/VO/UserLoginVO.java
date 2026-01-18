@@ -1,10 +1,21 @@
 package com.example.VO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
-class UserLoginVO {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class UserLoginVO {
     private Integer userId;
     private String accessToken;
-    private UserInfo userInfo;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime lastLoginTime;
+
 }

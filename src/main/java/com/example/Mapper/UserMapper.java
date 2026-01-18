@@ -1,14 +1,10 @@
 package com.example.Mapper;
 
 
-import com.example.DTO.RegisterDTO;
 import com.example.Pojo.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 @Mapper
 public interface UserMapper {
