@@ -59,6 +59,11 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+        <!--Redis依赖注入-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <!--Mybatis依赖注入-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

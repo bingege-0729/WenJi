@@ -32,12 +32,13 @@ public class UserServiceImpl implements UserService {
     public void register(UserRegistDTO userRegistDTO) {
         //两次确认密码
         String rePassword = userRegistDTO.getRePassword();
-        if(!rePassword.equals(userRegistDTO.getPassword())){
+        String password = userRegistDTO.getPassword();
+        if(!java.util.Objects.equals(rePassword, password)){
             throw new RuntimeException("两次输入的密码不一致");
         }
         String Password = Md5Util.getMD5String(userRegistDTO.getPassword());
 
-        userMapper.register(userRegistDTO.getPhone(), userRegistDTO.getNickname(), Password);
+        userMapper.register(userRegistDTO.getUsername(), userRegistDTO.getPhone(), Password);
     }
 
     /**
@@ -47,8 +48,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<UserLoginVO> login(UserLoginDTO userLoginDTO) {
-        User user = userMapper.selectByPhone(userLoginDTO.getPhone());
-        if(user == null){
+        User user = userMapper.selectByUserName(userLoginDTO.getUsername());
+        if(user == null){ // 修复：先检查user是否为null
             return Result.error("用户不存在");
         }
         String newPassword = Md5Util.getMD5String(userLoginDTO.getPassword());
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
         //创建包含用户信息的Map生成Token
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", user.getId());
-        claims.put("phone", userLoginDTO.getPhone());
+        claims.put("username", userLoginDTO.getUsername());
         String token = JwtUtils.generateToken(claims);
         UserLoginVO userLoginVO = UserLoginVO.builder()
                 .userId(user.getId())

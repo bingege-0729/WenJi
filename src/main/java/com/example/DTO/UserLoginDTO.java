@@ -1,12 +1,11 @@
 package com.example.DTO;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class UserLoginDTO {
-    private String phone;//手机号
-    private String code;//验证码
+    @NotBlank(message = "用户名不能为空")
+    private String username;
     private String password;//密码
-
-  //  private String loginType;// phone/email
 }
