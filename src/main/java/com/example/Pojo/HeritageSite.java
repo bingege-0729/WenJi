@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class HeritageSite {
@@ -13,20 +14,13 @@ public class HeritageSite {
     private String enName;
     private Integer type;
     private String category;
-    private String level; // 你的推荐权重核心字段
+    private String level;
     private String provinceCode;
     private String cityCode;
     private String address;
     private BigDecimal latitude;
     private BigDecimal longitude;
-
-    /**
-     * 空间索引字段。
-     * 插入时建议：ST_GeomFromText('POINT(lng lat)')
-     * 查询时建议：ST_AsText(location_point)
-     */
-    private Object locationPoint;
-
+    private Object locationPoint; // 存储经纬度
     private String geohash;
     private String coverImage;
     private String description;
@@ -44,4 +38,9 @@ public class HeritageSite {
     private Integer capacity;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+
+    // 关联数据
+    private List<SiteImage> images;
+    private List<OpeningHours> openingHours;
+    private Boolean isOpening;
 }

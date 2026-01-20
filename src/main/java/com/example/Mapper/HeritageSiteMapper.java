@@ -15,4 +15,9 @@ public interface HeritageSiteMapper {
                                               @Param("lat") Double lat,
                                               @Param("cityCode") String cityCode,
                                               @Param("limit") Integer limit);
+
+    /**
+     * 根据景点ID获取完整详情（包含图片和时间列表）
+     */
+    HeritageSite getSiteDetail(@Param("siteId") String siteId);
 }
