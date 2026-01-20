@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yourpackage.mapper.HeritageSiteMapper">
-    <select id="selectRecommendedSites" resultType="com.yourpackage.entity.HeritageSite">
+<mapper namespace="com.example.Mapper.HeritageSiteMapper">
+    <select id="selectRecommendedSites" resultType="com.example.Pojo.HeritageSite">
         SELECT
         site_id, name, level, address, cover_image, popularity, rating,
         latitude, longitude,
-        ST_Distance_Sphere(location_point, ST_GeomFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')'))) AS distance
+        ST_Distance_Sphere(location_point, ST_PointFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')'))) AS distance
         FROM heritage_sites
         WHERE status = 1
         ORDER BY

@@ -22,7 +22,8 @@
         SELECT * FROM regions
         WHERE level = 2
           AND is_active = TRUE
-          AND ST_Contains(ST_GeomFromText(polygon), ST_GeomFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')')))
+          AND ST_Contains(ST_GeomFromText(polygon), ST_PointFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')')))
         LIMIT 1
     </select>
+
 </mapper>
