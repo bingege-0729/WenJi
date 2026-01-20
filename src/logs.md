@@ -35,64 +35,44 @@ FOREIGN KEY (site_id) REFERENCES heritage_sites(site_id);
 
 输入信息：
 
-```
-GET http://localhost:8080/map/initial?lng=116.3&lat=39.9
-```
+**GET http://localhost:8080/map/initial?lng=116.3&lat=39.9**
 
 输出信息：
 
 ```json
-"code": 1,
+{
+    "code": 1,
     "msg": "成功",
     "data": [
         {
             "siteId": "S001",
-            "siteCode": null,
+            "siteCode": "BJ_001",
             "name": "故宫博物院（木结构营造技艺）",
-            "enName": null,
-            "type": null,
-            "category": null,
+            "type": 1,
             "level": "国家级",
-            "provinceCode": null,
-            "cityCode": null,
+            "provinceCode": "110000",
+            "cityCode": "110100",
             "address": "北京市东城区景山前街4号",
             "latitude": 39.9163000,
             "longitude": 116.3974000,
-            "locationPoint": null,
-            "geohash": null,
-            "coverImage": null,
-            "description": null,
-            "history": null,
-            "techniques": null,
-            "bestSeason": null,
-            "suitableDuration": null,
-            "contactPhone": null,
-            "officialUrl": null,
-            "status": null,
-            "isRecommended": null,
+            "locationPoint": "AAAAAAEBAAAAjNtoAG8ZXUCTqYJRSfVDQA==",
+            "status": 1,
+            "isRecommended": true,
             "popularity": 9.90,
-            "visitCount": null,
+            "visitCount": 0,
             "rating": 4.90,
-            "capacity": null,
-            "createTime": null,
-            "updateTime": null,
+            "createTime": "2026-01-20 12:45:05",
+            "updateTime": "2026-01-20T12:45:05",
+            "distance": 942.9034358103929,
             "images": [
                 {
                     "imageId": 1,
                     "siteId": "S001",
                     "imageUrl": "https://example.com/gugong_cover.jpg",
-                    "thumbnailUrl": null,
-                    "title": null,
-                    "description": null,
                     "sortOrder": 1,
                     "isCover": true,
-                    "imageType": null,
-                    "width": null,
-                    "height": null,
-                    "size": null,
-                    "uploadBy": null,
                     "status": 1,
-                    "createTime": "2026-01-20T12:45:21"
+                    "createTime": "2026-01-20 12:45:21"
                 }
             ],
             "openingHours": [
@@ -103,9 +83,7 @@ GET http://localhost:8080/map/initial?lng=116.3&lat=39.9
                     "openTime": "08:30:00",
                     "closeTime": "17:00:00",
                     "isOpen": true,
-                    "specialDate": null,
-                    "remark": null,
-                    "createTime": "2026-01-20T12:45:15",
+                    "createTime": "2026-01-20 12:45:15",
                     "updateTime": "2026-01-20T12:45:15"
                 },
                 {
@@ -115,9 +93,7 @@ GET http://localhost:8080/map/initial?lng=116.3&lat=39.9
                     "openTime": "08:30:00",
                     "closeTime": "17:00:00",
                     "isOpen": true,
-                    "specialDate": null,
-                    "remark": null,
-                    "createTime": "2026-01-20T12:45:15",
+                    "createTime": "2026-01-20 12:45:15",
                     "updateTime": "2026-01-20T12:45:15"
                 }
             ],
@@ -125,52 +101,33 @@ GET http://localhost:8080/map/initial?lng=116.3&lat=39.9
         },
         {
             "siteId": "S002",
-            "siteCode": null,
+            "siteCode": "XA_001",
             "name": "西安城隍庙庙会",
-            "enName": null,
-            "type": null,
-            "category": null,
+            "type": 2,
             "level": "省级",
-            "provinceCode": null,
-            "cityCode": null,
+            "provinceCode": "610000",
+            "cityCode": "610100",
             "address": "西安市西大街129号",
             "latitude": 34.2633000,
             "longitude": 108.9393000,
-            "locationPoint": null,
-            "geohash": null,
-            "coverImage": null,
-            "description": null,
-            "history": null,
-            "techniques": null,
-            "bestSeason": null,
-            "suitableDuration": null,
-            "contactPhone": null,
-            "officialUrl": null,
-            "status": null,
-            "isRecommended": null,
+            "locationPoint": "AAAAAAEBAAAAgEi/fR08W0C2hHzQsyFBQA==",
+            "status": 1,
+            "isRecommended": true,
             "popularity": 8.50,
-            "visitCount": null,
+            "visitCount": 0,
             "rating": 4.50,
-            "capacity": null,
-            "createTime": null,
-            "updateTime": null,
+            "createTime": "2026-01-20 12:45:05",
+            "updateTime": "2026-01-20T12:45:05",
+            "distance": 910954.4982613013,
             "images": [
                 {
                     "imageId": 2,
                     "siteId": "S002",
                     "imageUrl": "https://example.com/chenghuangmiao.jpg",
-                    "thumbnailUrl": null,
-                    "title": null,
-                    "description": null,
                     "sortOrder": 1,
                     "isCover": true,
-                    "imageType": null,
-                    "width": null,
-                    "height": null,
-                    "size": null,
-                    "uploadBy": null,
                     "status": 1,
-                    "createTime": "2026-01-20T12:45:21"
+                    "createTime": "2026-01-20 12:45:21"
                 }
             ],
             "openingHours": [
@@ -181,9 +138,7 @@ GET http://localhost:8080/map/initial?lng=116.3&lat=39.9
                     "openTime": "09:00:00",
                     "closeTime": "18:00:00",
                     "isOpen": true,
-                    "specialDate": null,
-                    "remark": null,
-                    "createTime": "2026-01-20T12:45:15",
+                    "createTime": "2026-01-20 12:45:15",
                     "updateTime": "2026-01-20T12:45:15"
                 }
             ],
@@ -192,5 +147,7 @@ GET http://localhost:8080/map/initial?lng=116.3&lat=39.9
     ]
 }
 ```
+
+
 
 

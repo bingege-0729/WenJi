@@ -3,9 +3,11 @@
 <mapper namespace="com.example.Mapper.HeritageSiteMapper">
     <select id="selectRecommendedSites" resultType="com.example.Pojo.HeritageSite">
         SELECT
-        site_id, name, level, address, cover_image, popularity, rating,
-        latitude, longitude,
-        ST_Distance_Sphere(location_point, ST_PointFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')'))) AS distance
+        *,
+        ST_Distance_Sphere(
+        location_point,
+        ST_GeomFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')'))
+        ) AS distance
         FROM heritage_sites
         WHERE status = 1
         ORDER BY

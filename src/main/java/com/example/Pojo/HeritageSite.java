@@ -1,5 +1,7 @@
 package com.example.Pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -7,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class HeritageSite {
     private String siteId;
     private String siteCode;
@@ -36,8 +39,10 @@ public class HeritageSite {
     private Integer visitCount;
     private BigDecimal rating;
     private Integer capacity;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private Double distance;
 
     // 关联数据
     private List<SiteImage> images;
