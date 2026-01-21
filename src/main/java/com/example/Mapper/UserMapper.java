@@ -51,4 +51,22 @@ public interface UserMapper {
      */
     @Update("UPDATE user SET username=#{userUpdateDTO.username},real_name=#{userUpdateDTO.realName},gender=#{userUpdateDTO.gender},birthday=#{userUpdateDTO.birthday},avatar_url=#{userUpdateDTO.avatarUrl},update_time=NOW() WHERE user_id=#{userId}")
     void updateById(@Param("userId") Integer userId, @Param("userUpdateDTO") @RequestBody @Validated UserUpdateDTO userUpdateDTO);
+
+    /**
+     * 修改密码
+     *
+     * @param userId
+     * @param newPassword
+     * @return
+     */
+    @Update("UPDATE user SET password= #{newPassword} WHERE user_id= #{userId}")
+    User updatePasswordById(Integer userId,String newPassword);
+
+    /**
+     * 根据用户id查询用户是否存在
+     * @param userId
+     * @return
+     */
+    @Select("SELECT * FROM user WHERE user_id = #{userId}")
+    User selectByUserId(Integer userId);
 }

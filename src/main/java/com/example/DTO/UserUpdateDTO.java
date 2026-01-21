@@ -19,6 +19,8 @@ public class UserUpdateDTO {
     private String username;// 用户名
     private String gender; // 性别
     private String password;// 密码
+    private String newPassword;// 新密码
+    private String rePassword;// 确认密码
     @Pattern(regexp = "^\\+?[1-9][\\d]{1,14}$", message = "手机号格式不正确") // 手机号验证
     private String phone;// 手机号
     private String realName;// 真实姓名

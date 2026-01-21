@@ -9,7 +9,7 @@ import com.example.VO.UserLoginVO;
 
 public interface UserService {
     /* *
-     * 用户注册/登录
+     * 用户注册
      * @Param registerDTO
      * @Return
      */
@@ -36,11 +36,13 @@ public interface UserService {
      */
     void updateById(Integer userId, UserUpdateDTO userUpdateDTO);
 
-
-    /**
-     * 修改用户信息
-     * @Param userId
-     * @Return
+    /* *
+     * 修改密码
+     * @param userId 用户ID
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @param rePassword 确认新密码
      */
+    void updatePassword(Integer userId,String oldPassword,String newPassword, String rePassword);
 
 }

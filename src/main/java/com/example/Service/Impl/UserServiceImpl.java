@@ -119,4 +119,27 @@ public class UserServiceImpl implements UserService {
         userMapper.updateById(userId, userUpdateDTO);
     }
 
+    /**
+     * 修改密码
+     * @param userId 用户ID
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @param rePassword 确认新密码
+     */
+    @Override
+    public void updatePassword(Integer userId, String oldPassword, String newPassword, String rePassword) {
+        if(!newPassword.equals(rePassword)){
+            throw new RuntimeException("两次输入的密码不一致");
+        }
+
+        //检查旧密码是否正确
+        User u = userMapper.selectByUserId(userId);
+        if(!Md5Util.getMD5String(oldPassword).equals(u.getPassword())){
+            throw new RuntimeException("旧密码错误");
+        }
+
+        //修改密码
+        User user=userMapper.updatePasswordById(userId, Md5Util.getMD5String(newPassword));
+    }
+
 }
