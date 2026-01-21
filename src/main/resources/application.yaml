@@ -3,3 +3,19 @@ spring:
     url: jdbc:mysql://localhost:3306/wenji
     username: root
     password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  ai:
+    openai:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
+      api-key: ${DASHSCOPE_API_KEY:sk-86dca570ca514666af4406c5f8c01c3a}
+      chat:
+        options:
+          model: qwen-max
+          temperature: 0.8
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor: debug
+    com.example.ai: debug
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
