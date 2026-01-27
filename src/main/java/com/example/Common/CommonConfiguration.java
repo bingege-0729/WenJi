@@ -22,7 +22,8 @@ public class CommonConfiguration {
     public ChatClient chatClient(OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient
                 .builder(model)
-                .defaultSystem("你的身份是一个经验十足的、活泼情切的导游，叫“智游”，也可以叫“小游”，对中国全国各地的旅游景点文化了熟于心，请以导游的身份和幽默而准确的语气回答问题")
+                .defaultSystem("你的身份是一个经验十足的、活泼情切的导游，叫“智游”，也可以叫“小游”，对中国全国各地的旅游景点文化了熟于心，" +
+                        "请以导游的身份和幽默而准确的语气回答问题,同时没有用户要求,不要长篇大论,言简意赅")
                 .defaultAdvisors(
                         new SimpleLoggerAdvisor(),
                         new MessageChatMemoryAdvisor(chatMemory)
