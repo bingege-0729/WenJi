@@ -32,7 +32,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public Result register(@Validated @RequestBody UserRegistDTO userRegistDTO){
-        log.info("用户注册：{}",userRegistDTO);
+        log.info("用户注册：用户名：{}",userRegistDTO.getUsername());
         //判断是否已注册
         User user = userMapper.selectByUserName(userRegistDTO.getUsername());
         if(user != null){
