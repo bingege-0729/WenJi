@@ -31,6 +31,125 @@ ALTER TABLE site_images
 ADD CONSTRAINT fk_site_images_site
 FOREIGN KEY (site_id) REFERENCES heritage_sites(site_id);
 ```
+## HeritageController接口调试：
+
+输入信息：
+
+**GET http://localhost:8080/map/initial?lng=116.3&lat=39.9**
+
+输出信息：
+
+```json
+{
+    "code": 1,
+    "msg": "成功",
+    "data": [
+        {
+            "siteId": "S001",
+            "siteCode": "BJ_001",
+            "name": "故宫博物院（木结构营造技艺）",
+            "type": 1,
+            "level": "国家级",
+            "provinceCode": "110000",
+            "cityCode": "110100",
+            "address": "北京市东城区景山前街4号",
+            "latitude": 39.9163000,
+            "longitude": 116.3974000,
+            "locationPoint": "AAAAAAEBAAAAjNtoAG8ZXUCTqYJRSfVDQA==",
+            "status": 1,
+            "isRecommended": true,
+            "popularity": 9.90,
+            "visitCount": 0,
+            "rating": 4.90,
+            "createTime": "2026-01-20 12:45:05",
+            "updateTime": "2026-01-20T12:45:05",
+            "distance": 942.9034358103929,
+            "images": [
+                {
+                    "imageId": 1,
+                    "siteId": "S001",
+                    "imageUrl": "https://example.com/gugong_cover.jpg",
+                    "sortOrder": 1,
+                    "isCover": true,
+                    "status": 1,
+                    "createTime": "2026-01-20 12:45:21"
+                }
+            ],
+            "openingHours": [
+                {
+                    "hourId": 1,
+                    "siteId": "S001",
+                    "dayOfWeek": 1,
+                    "openTime": "08:30:00",
+                    "closeTime": "17:00:00",
+                    "isOpen": true,
+                    "createTime": "2026-01-20 12:45:15",
+                    "updateTime": "2026-01-20T12:45:15"
+                },
+                {
+                    "hourId": 2,
+                    "siteId": "S001",
+                    "dayOfWeek": 2,
+                    "openTime": "08:30:00",
+                    "closeTime": "17:00:00",
+                    "isOpen": true,
+                    "createTime": "2026-01-20 12:45:15",
+                    "updateTime": "2026-01-20T12:45:15"
+                }
+            ],
+            "isOpening": true
+        },
+        {
+            "siteId": "S002",
+            "siteCode": "XA_001",
+            "name": "西安城隍庙庙会",
+            "type": 2,
+            "level": "省级",
+            "provinceCode": "610000",
+            "cityCode": "610100",
+            "address": "西安市西大街129号",
+            "latitude": 34.2633000,
+            "longitude": 108.9393000,
+            "locationPoint": "AAAAAAEBAAAAgEi/fR08W0C2hHzQsyFBQA==",
+            "status": 1,
+            "isRecommended": true,
+            "popularity": 8.50,
+            "visitCount": 0,
+            "rating": 4.50,
+            "createTime": "2026-01-20 12:45:05",
+            "updateTime": "2026-01-20T12:45:05",
+            "distance": 910954.4982613013,
+            "images": [
+                {
+                    "imageId": 2,
+                    "siteId": "S002",
+                    "imageUrl": "https://example.com/chenghuangmiao.jpg",
+                    "sortOrder": 1,
+                    "isCover": true,
+                    "status": 1,
+                    "createTime": "2026-01-20 12:45:21"
+                }
+            ],
+            "openingHours": [
+                {
+                    "hourId": 3,
+                    "siteId": "S002",
+                    "dayOfWeek": 1,
+                    "openTime": "09:00:00",
+                    "closeTime": "18:00:00",
+                    "isOpen": true,
+                    "createTime": "2026-01-20 12:45:15",
+                    "updateTime": "2026-01-20T12:45:15"
+                }
+            ],
+            "isOpening": false
+        }
+    ]
+}
+```
+
+
+
 
 # 1-21-2026
 ## 修改User实体类,添加UserUpdateDTO

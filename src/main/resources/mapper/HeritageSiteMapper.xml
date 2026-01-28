@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Mapper.HeritageSiteMapper">
+    <select id="selectRecommendedSites" resultType="com.example.Pojo.HeritageSite">
+        SELECT
+        *,
+        ST_Distance_Sphere(
+        location_point,
+        ST_GeomFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')'))
+        ) AS distance
+        FROM heritage_sites
+        WHERE status = 1
+        ORDER BY
+        <if test="cityCode != null">
+            (city_code = #{cityCode}) DESC,
+        </if>
+        CASE level
+        WHEN '国家级' THEN 1
+        WHEN '省级' THEN 2
+        WHEN '市级' THEN 3
+        ELSE 4
+        END DESC,
+        distance DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

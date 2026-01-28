@@ -1,23 +1,13 @@
 spring:
+  application.name: wenji
   datasource:
-    url: jdbc:mysql://localhost:3306/wenji
+    url: jdbc:mysql://localhost:3306/wenji?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
-  ai:
-    openai:
-      base-url: https://dashscope.aliyuncs.com/compatible-mode
-      api-key: ${OPENAI_API_KEY}
-      chat:
-        options:
-          model: qwen-max
-          temperature: 0.8
-          max-tokens: 200
 
-logging:
-  level:
-    org.springframework.ai.chat.client.advisor: debug
-    com.example.ai: debug
 mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.Pojo
   configuration:
     map-underscore-to-camel-case: true
