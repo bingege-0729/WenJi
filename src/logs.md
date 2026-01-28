@@ -133,3 +133,18 @@ CREATE TABLE user_preference (
 )Enginee=innoDB DEFAULT CHARSET=utf8mb4 comment='用户偏好表';
 ```
 ### 完成ai智能体图文对话的初步配置
+
+1-22-2026
+## 创建操作日志表
+```sql
+create table operate_log(
+id int unsigned primary key auto_increment comment 'ID',
+operate_emp_id int unsigned comment '操作员工ID',
+operate_time datetime comment '操作时间',
+class_name varchar(100) comment '操作类名',
+method_name varchar(100) comment '操作方法名',
+method_params varchar(2000) comment '操作方法参数',
+return_value varchar(2000) comment '操作方法返回值',
+cost_time int unsigned comment '操作方法耗时,单位:ms'
+)comment '操作日志表';
+```

@@ -1,6 +1,6 @@
 package com.example.Exception;
 
-import com.example.Utils.Result;
+import com.example.Common.Result;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

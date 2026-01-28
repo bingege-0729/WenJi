@@ -89,6 +89,24 @@
       "id" : "chatcmpl-ee0a0b9a-9ef7-9e77-be71-c082a0dbeabc"
     }
   } ],
+  "chat_1769500664352_8mo3u5xra" : [ {
+    "messageType" : "USER",
+    "text" : "111",
+    "metadata" : {
+      "messageType" : "USER"
+    }
+  }, {
+    "messageType" : "ASSISTANT",
+    "text" : "亲，这边不太理解你的意思哦～有什么我可以帮到你的吗？😊",
+    "metadata" : {
+      "role" : "ASSISTANT",
+      "messageType" : "ASSISTANT",
+      "finishReason" : "STOP",
+      "refusal" : "",
+      "index" : 0,
+      "id" : "chatcmpl-79f42e2f-5297-9eec-9514-f2ab3cc12a4a"
+    }
+  } ],
   "chat_1769439587247_z3ow3f37m" : [ {
     "messageType" : "USER",
     "text" : "青花瓷是哪个朝代的",
