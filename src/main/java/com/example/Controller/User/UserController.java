@@ -3,20 +3,21 @@ package com.example.Controller.User;
 import com.example.Common.Result;
 import com.example.DTO.UserLoginDTO;
 import com.example.DTO.UserRegistDTO;
+import com.example.DTO.UserUpdateDTO;
 import com.example.Mapper.UserMapper;
 import com.example.Pojo.User;
 import com.example.Service.UserService;
+import com.example.VO.UserInfoVO;
 import com.example.VO.UserLoginVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 
 @RestController
-@RequestMapping("/auth")
+@Slf4j
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -31,6 +32,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public Result register(@Validated @RequestBody UserRegistDTO userRegistDTO){
+        log.info("用户注册：用户名：{}",userRegistDTO.getUsername());
         //判断是否已注册
         User user = userMapper.selectByUserName(userRegistDTO.getUsername());
         if(user != null){
@@ -40,39 +42,57 @@ public class UserController {
         return Result.success();
     }
     /**
-     * 发送验证码
-     * @Param phone
-     * @Return
-     */
-//    @GetMapping("/send-code")
-//    public Result sendCode(@RequestBody String phone){
-//        //生成验证码
-//        String code = String.valueOf((int)((Math.random()*9+1)*100000));
-//        //保存验证码
-//        //redis.set(phone, code);
-//        //发送验证码
-//        //SMSUtils.sendMessage("瑞吉外卖", "", phone, code);
-//        return Result.success();
-//    }
-    /**
      * 用户登录
      * @Param LoginDTO
      * @Return
      */
     @PostMapping("/login")
     public Result<UserLoginVO> login(@Validated @RequestBody UserLoginDTO userLoginDTO){
+        log.info("用户登录：{}",userLoginDTO);
         Result<UserLoginVO> result = userService.login(userLoginDTO);
         return result;
     }
-    // 添加一个GET请求处理，用于测试连接
-    @GetMapping
-    public Result<String> defaultGet() {
-        return Result.success("认证模块正常运行");
+
+    /**
+     * 获取用户信息
+     * @Param userId
+     * @Return
+     */
+    @GetMapping("/info/{userId}")
+    public Result getById(@PathVariable Integer userId){
+        log.info("获取用户信息：{}",userId);
+        UserInfoVO userInfo = userService.getByUserId(userId);
+        return Result.success(userInfo);
     }
 
-    // 添加一个根路径的GET请求处理
-    @GetMapping("/")
-    public Result<String> home() {
-        return Result.success("欢迎使用认证服务");
+    /**
+     * 修改用户信息
+     * @Param userId
+     * @Return
+     */
+    @PutMapping("/update/{userId}")
+    public Result update(@PathVariable Integer userId,@Validated @RequestBody UserUpdateDTO userUpdateDTO){
+        log.info("修改用户信息：{}",userUpdateDTO);
+        userService.updateById(userId, userUpdateDTO);
+        return Result.success("信息更新成功");
     }
+
+    /**
+     * 修改密码
+     * @Param userId
+     * @Param oldPassword
+     * @Param newPassword
+     * @Param rePassword
+     * @Return
+     */
+    @PutMapping("/updatePassword/{userId}")
+    public Result updatePassword(@PathVariable Integer userId, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String rePassword){
+        if(userMapper.selectByUserId(userId)==null){
+            return Result.error("用户不存在");
+        }
+        log.info("修改密码：{}",userId);
+        userService.updatePassword(userId, oldPassword, newPassword, rePassword);
+        return Result.success("密码修改成功");
+    }
+
 }

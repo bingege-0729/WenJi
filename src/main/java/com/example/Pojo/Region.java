@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Region {
-    private String regionCode;
-    private String parentCode;
-    private String name;
-    private Integer level;
-    private BigDecimal centerLat;
-    private BigDecimal centerLng;
+    private String regionCode;//区域编码
+    private String parentCode;//父级区域编码
+    private String name;//区域名称
+    private Integer level;//区域级别
+    private BigDecimal centerLat;//区域中心点纬度
+    private BigDecimal centerLng;//区域中心点经度
     private String polygon; // 存储多边形 WKT 文本
     private Integer sortOrder;
     private Boolean isActive;
