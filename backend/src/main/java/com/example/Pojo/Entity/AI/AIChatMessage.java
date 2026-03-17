@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @TableName("ai_chat_message")
 public class AIChatMessage {
+    @TableId(type = IdType.AUTO)
     private Long messageId;        // 主键 ID
     
     private Long chatId;           // 会话 ID（关联 ai_chat_session.chat_id）

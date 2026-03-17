@@ -21,15 +21,18 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.example.Common.Constants.RedisConstants.*;
 import static com.example.Common.Result.error;
-import static com.example.Config.LevelConfig.getLevelByExp;
 import static com.example.Common.Utils.JwtUtils.generateToken;
 
 @Service
@@ -43,6 +46,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     /**
@@ -119,6 +124,8 @@ public class UserServiceImpl implements UserService {
         userInfo.put("username", user.getUsername());
         userInfo.put("phone", user.getPhone());
         userInfo.put("avatarUrl", user.getAvatarUrl());
+        userInfo.put("location", user.getLocation());
+        userInfo.put("points", user.getPoints() == null ? "0" : user.getPoints().toString());
         return userInfo;
     }
 
@@ -191,7 +198,12 @@ public class UserServiceImpl implements UserService {
                 UserInfoVO userInfoVO = new UserInfoVO();
                 userInfoVO.setUsername((String) userInfo.get("username"));
                 userInfoVO.setPhone((String) userInfo.get("phone"));
-                userInfoVO.setAvatarUrl((String) userInfo.get("avatarUrl"));//这里写错了avatarUrl
+                userInfoVO.setAvatarUrl((String) userInfo.get("avatarUrl"));
+                userInfoVO.setLocation((String) userInfo.get("location"));
+                Object pointsObj = userInfo.get("points");
+                if (pointsObj != null) {
+                    userInfoVO.setPoints(Integer.parseInt(pointsObj.toString()));
+                }
                 log.info("从redis中获取用户信息成功，用户ID：{}",userId);
                 return Result.success(userInfoVO);
             }
@@ -208,43 +220,54 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 修改用户信息
-     *
      * @param userId 用户ID
+     * @param userUpdateDTO 修改信息
      */
     @Override
+    @Transactional
     public void updateById(Long userId, UserUpdateDTO userUpdateDTO) {
-        // 检查用户是否存在
-        User existingUser=userMapper.selectById(userId);
-        if(existingUser == null) {
-            throw new RuntimeException("用户不存在");
-        }
-        // 如果提供了新密码，则需要验证旧密码
+        // 处理密码加密等逻辑
         if (userUpdateDTO.getNewPassword() != null && !userUpdateDTO.getNewPassword().isEmpty()) {
-            // 检查旧密码是否正确
-            if (userUpdateDTO.getPassword() == null || userUpdateDTO.getPassword().isEmpty()) {
-                throw new RuntimeException("修改密码需要提供旧密码");
-            }
-            if (!Md5Util.getMD5String(userUpdateDTO.getPassword()).equals(existingUser.getPassword())) {
-                throw new RuntimeException("旧密码错误");
-            }
-            // 验证新密码和确认密码是否一致
             if (!userUpdateDTO.getNewPassword().equals(userUpdateDTO.getRePassword())) {
-                throw new RuntimeException("两次输入的新密码不一致");
+                throw new RuntimeException("两次密码输入不一致");
             }
-            // 将加密后的密码放入DTO中用于更新
             userUpdateDTO.setPassword(Md5Util.getMD5String(userUpdateDTO.getNewPassword()));
         }
-        // 处理experience为null的情况，如果为null则使用0作为默认值
-        Integer experience = userUpdateDTO.getExperience();
-        if (experience != null) {
-            String userLevel = getLevelByExp(experience);
-            userUpdateDTO.setLevel(userLevel);
-        } else {
-            // 如果experience为null，保持原等级不变或设置为默认等级
-            userUpdateDTO.setLevel(getLevelByExp(0)); // 设置为默认等级"见习学徒"
-        }
+        
         // 调用mapper更新用户信息
-        userMapper.updateById(userId, userUpdateDTO);
+        userMapper.updateUserInfo(userId, userUpdateDTO);
+
+        // 清理并更新 Redis 缓存：获取当前请求头中的 token
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            String authorization = request.getHeader("Authorization");
+            if (authorization != null && authorization.startsWith("Bearer ")) {
+                String token = authorization.substring(7).trim();
+                String key = USER_LOGIN_KEY + token;
+                
+                // 查询最新用户信息
+                User updatedUser = userMapper.selectById(userId);
+                if (updatedUser != null) {
+                    // 将最新用户信息更新回 Redis
+                    Map<String, String> userMap = new HashMap<>();
+                    userMap.put("userId", updatedUser.getUserId().toString());
+                    userMap.put("username", updatedUser.getUsername());
+                    userMap.put("avatarUrl", updatedUser.getAvatarUrl());
+                    userMap.put("location", updatedUser.getLocation());
+                    userMap.put("phone", updatedUser.getPhone());
+                    userMap.put("points", updatedUser.getPoints() == null ? "0" : updatedUser.getPoints().toString());
+                    
+                    // 这里注意：MyBatis-Plus 的 selectById 返回的是 User 对象
+                    // 我们需要同步更新 Redis 中的哈希表
+                    stringRedisTemplate.opsForHash().putAll(key, userMap);
+                    // 重新设置过期时间
+                    stringRedisTemplate.expire(key, USER_LOGIN_EXPIRE, TimeUnit.MINUTES);
+                    
+                    log.info("用户信息更新，已同步更新 Redis 缓存，Key: {}", key);
+                }
+            }
+        }
     }
     /**
      * 删除用户

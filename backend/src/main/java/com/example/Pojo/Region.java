@@ -1,5 +1,6 @@
 package com.example.Pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TableName("region")
 public class Region {
+    @TableId
     private String regionCode;//区域编码
     private String parentCode;//父级区域编码
     private String name;//区域名称

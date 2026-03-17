@@ -110,13 +110,14 @@ import Layout from '@/components/Layout.vue'
 import { ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getCurrentUserInfo, updateUserInfo } from '@/api/user' // 导入更新用户信息的API
+import { getCurrentUserInfo, updateUserInfo, uploadFile } from '@/api/user' // 导入更新用户信息的API
 import { mapApi } from '@/api/mapApi' // 导入mapApi
 
 const router = useRouter()
 
 // ========== 头像相关 ==========
 const avatarMode = ref('upload') // 'upload' | 'select'
+const selectedFile = ref(null) // 新增：保存选择的文件对象
 
 const builtinIcons = [
   {
@@ -181,6 +182,7 @@ function setAvatarMode(mode) {
 function handleFileUpload(event) {
   const file = event.target.files[0]
   if (file) {
+    selectedFile.value = file // 保存文件对象
     const url = URL.createObjectURL(file)
     avatar.type = 'image'
     avatar.url = url
@@ -203,7 +205,16 @@ const loadUserInfo = async () => {
     if (response.code === 1) {
       // 使用后端返回的用户名和位置信息
       elegantName.value = response.data.username || '林砚之'
-      location.value = response.data.location || response.data.address || '景德镇'
+      
+      // 检查后端是否返回了位置信息
+      if (response.data.location) {
+        location.value = response.data.location;
+      } else if (response.data.address) {
+        location.value = response.data.address;
+      } else {
+        // 如果后端没有位置信息，则自动尝试获取当前物理位置
+        await getLocation();
+      }
       
       // 加载头像信息
       if (response.data.avatarUrl) {
@@ -267,18 +278,27 @@ async function reverseGeocode(lat, lng) {
 // 获取当前位置
 async function getLocation() {
   try {
-    ElMessage.info('正在获取位置…')
-    // 调用地图API获取实际位置
+    ElMessage.info('正在尝试获取当前位置...')
+    // 调用地图API获取实际位置 (使用 HTML5 Geolocation)
     const locationData = await mapApi.getUserLocation();
     
-    // 使用反向地理编码获取城市名称
-    const city = await reverseGeocode(locationData.lat, locationData.lng);
-    location.value = city;
-    
-    ElMessage.success('位置获取成功')
+    // 如果获取到的是非默认的有效经纬度
+    if (locationData && locationData.lat !== 35.8617) {
+      // 使用反向地理编码获取城市名称
+      const city = await reverseGeocode(locationData.lat, locationData.lng);
+      location.value = city;
+      ElMessage.success(`位置已自动识别为: ${city}`)
+    } else {
+      // 如果定位失败或返回默认值，则默认设置为景德镇
+      if (!location.value) {
+        location.value = '景德镇'
+      }
+    }
   } catch (error) {
-    console.error('获取位置失败:', error)
-    ElMessage.error('获取位置失败')
+    console.error('获取地理位置失败:', error)
+    if (!location.value) {
+      location.value = '景德镇'
+    }
   }
 }
 
@@ -290,14 +310,13 @@ function goToSecurity() {
 
 // 保存用户信息到后端
 async function saveInfo() {
+  const loadingMsg = ElMessage({
+    message: '正在保存信息...',
+    type: 'info',
+    duration: 0 
+  });
+  
   try {
-    // 显示保存中提示
-    const loadingMsg = ElMessage({
-      message: '正在保存信息...',
-      type: 'info',
-      duration: 0 // 持久显示直到手动关闭
-    });
-    
     // 准备要更新的数据
     const updateData = {
       username: elegantName.value,
@@ -306,35 +325,38 @@ async function saveInfo() {
 
     // 处理头像数据
     if (avatar.type === 'image') {
-      // 如果是图片，需要先上传到服务器获取URL
-      // 这里我们先保存图片的Object URL，实际应用中需要上传到服务器
-      updateData.avatarType = 'image';
-      updateData.avatarUrl = avatar.url;
+      // 如果有新选择的文件，先上传
+      if (selectedFile.value) {
+        const uploadRes = await uploadFile(selectedFile.value);
+        if (uploadRes.code === 1) {
+          updateData.avatarUrl = uploadRes.data;
+        } else {
+          throw new Error(uploadRes.msg || '头像上传失败');
+        }
+      } else {
+        // 如果没有新文件，使用原有的 URL
+        updateData.avatarUrl = avatar.url;
+      }
     } else {
-      // 保存选择的内置图标名称
-      updateData.avatarType = 'builtin';
+      // 选择内置图标模式，清空 avatarUrl 并设置 iconName
+      updateData.avatarUrl = null;
       updateData.iconName = selectedIcon.value.name;
     }
 
     // 调用API更新用户信息
     const response = await updateUserInfo(updateData);
     
-    // 关闭加载提示
     loadingMsg.close();
     
     if (response.code === 1) {
       ElMessage.success(response.msg || '个人信息保存成功！');
-      // 保存成功后返回到个人资料页面，这样会重新加载数据
       router.replace('/user/profile')
     } else {
       ElMessage.error(response.msg || '保存失败，请稍后重试');
     }
   } catch (error) {
     console.error('保存用户信息失败:', error);
-    // 关闭加载提示
-    if (typeof loadingMsg !== 'undefined') {
-      loadingMsg.close();
-    }
+    loadingMsg.close();
     ElMessage.error('保存失败：' + (error.message || '网络错误'));
   }
 }

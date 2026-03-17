@@ -2,7 +2,15 @@
   <Layout title="文迹 - 探索文化遗产" :showBack="false">
     <div class="home-container">
       <!-- 用户头像 -->
-      <div class="user-avatar" @click="goToProfile">📜</div>
+      <div class="user-avatar" @click="goToProfile">
+        <img v-if="userAvatar.type === 'image'" :src="userAvatar.url" class="avatar-img" />
+        <svg v-else width="30" height="30" viewBox="0 0 100 100">
+          <g v-for="(path, index) in selectedIconPaths" :key="index">
+            <path v-if="path.d" :d="path.d" :fill="path.fill" :opacity="path.opacity || 1" />
+            <ellipse v-else-if="path.type === 'ellipse'" :cx="path.cx" :cy="path.cy" :rx="path.rx" :ry="path.ry" :fill="path.fill" />
+          </g>
+        </svg>
+      </div>
 
       <!-- 内容区域 -->
       <div class="content">
@@ -35,10 +43,72 @@
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Layout from '@/components/Layout.vue'
+import { getCurrentUserInfo } from '@/api/user'
 
 const router = useRouter()
+
+const userAvatar = ref({ type: 'builtin', iconName: 'default' })
+const selectedIconPaths = ref([])
+
+// 默认头像路径 - 青瓷瓶
+const defaultAvatarPaths = [
+  { d: 'M50,10 C30,10 20,30 20,50 L20,70 C20,85 30,90 50,90 C70,90 80,85 80,70 L80,50 C80,30 70,10 50,10 Z', fill: '#A68A64', opacity: '0.9' },
+  { type: 'ellipse', cx: 50, cy: 75, rx: 25, ry: 8, fill: '#8B7355' }
+]
+
+const loadUserInfo = async () => {
+  try {
+    const response = await getCurrentUserInfo();
+    if (response.code === 1) {
+      if (response.data.avatarUrl) {
+        userAvatar.value = { type: 'image', url: response.data.avatarUrl };
+      } else if (response.data.iconName) {
+        userAvatar.value = { type: 'builtin', iconName: response.data.iconName };
+        setSelectedIconPaths(response.data.iconName);
+      } else {
+        userAvatar.value = { type: 'builtin', iconName: 'default' };
+        selectedIconPaths.value = defaultAvatarPaths;
+      }
+    }
+  } catch (error) {
+    console.error('获取用户信息失败:', error);
+    selectedIconPaths.value = defaultAvatarPaths;
+  }
+}
+
+const setSelectedIconPaths = (iconName) => {
+  const icons = {
+    porcelain: [{ d: 'M50,10 C30,10 20,30 20,50 L20,70 C20,85 30,90 50,90 C70,90 80,85 80,70 L80,50 C80,30 70,10 50,10 Z', fill: '#A68A64' }],
+    tea: [{ d: 'M30,40 Q50,20 70,40 L65,70 Q50,80 35,70 Z', fill: '#8B7355' }],
+    scroll: [
+      { d: 'M20,30 h60 v40 h-60 z', fill: '#A68A64', opacity: 0.9 },
+      { d: 'M30,50 a8,8 0 1,0 0,0', fill: 'white' },
+      { d: 'M70,50 a8,8 0 1,0 0,0', fill: 'white' }
+    ],
+    fan: [
+      { d: 'M50,20 A30,30 0 0,1 80,50 A30,30 0 0,1 50,80 L50,20 Z', fill: '#A68A64' },
+      { d: 'M50,20 L40,10 M50,20 L60,10', stroke: '#A68A64', strokeWidth: 4, fill: 'none' }
+    ],
+    architecture: [
+      { d: 'M30,50 h40 v30 h-40 z', fill: '#A68A64' },
+      { d: 'M20,40 h60 v10 h-60 z', fill: '#8B7355' },
+      { d: 'M10,30 h80 v10 h-80 z', fill: '#A68A64' }
+    ],
+    lantern: [
+      { type: 'ellipse', cx: 50, cy: 30, rx: 15, ry: 10, fill: '#A68A64' },
+      { d: 'M35,30 h30 v40 h-30 z', rx: 6, fill: '#A68A64' },
+      { type: 'ellipse', cx: 50, cy: 70, rx: 10, ry: 6, fill: '#8B7355' }
+    ]
+  };
+  selectedIconPaths.value = icons[iconName] || defaultAvatarPaths;
+}
+
+onMounted(() => {
+  loadUserInfo();
+})
 
 const features = [
   {
@@ -121,13 +191,22 @@ function handleFeatureClick(featureId) {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  display: grid; /* 启用 Grid 布局 */
-  place-items: center; /* 水平和垂直居中 */
-  font-size: 20px;
+  display: flex; /* 改为 flex 以便更好地处理图片和SVG */
+  align-items: center;
+  justify-content: center;
   background-color: #A68A64;
   cursor: pointer;
   align-self: flex-end;
   margin-bottom: -10px;
+  overflow: hidden; /* 确保图片不超出圆角 */
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* 内容区域 */

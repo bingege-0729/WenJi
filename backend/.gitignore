@@ -9,12 +9,15 @@ chat-memory.json
 .idea/
 *.iml
 *.iws
+backend/src/main/resources/application.yml
+backend/src/main/resources/application-test.yml
 
 # ================= Backend (Java/Maven) =================
 backend/target/
 backend/.mvn/
 backend/mvnw
 backend/mvnw.cmd
+
 
 # ================= Frontend (Vue/Node) =================
 frontend/node_modules/

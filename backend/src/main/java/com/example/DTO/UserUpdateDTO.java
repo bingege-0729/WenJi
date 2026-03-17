@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 public class UserUpdateDTO {
     @NotBlank
     private String username;// 用户名
-    private String gender; // 性别
+    private Integer gender; // 性别
     private String password;// 密码
     private String newPassword;// 新密码
     private String rePassword;// 确认密码
@@ -27,6 +26,7 @@ public class UserUpdateDTO {
     @Email(message = "邮箱格式不正确")
     private String email;// 邮箱
     private String avatarUrl;// 头像
+    private String location;// 常驻之地
     private String level;// 等级 见习学徒
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;// 生日

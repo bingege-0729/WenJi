@@ -251,6 +251,7 @@ public class AIChatMessageServiceImpl implements AIChatMessageService {
     /**
      * 转换 Spring AI Message 到 AIChatMessage
      */
+    /*
     private AIChatMessage convertToAIChatMessage(Message message, Long chatId) {
         return AIChatMessage.builder()
                 .chatId(chatId)
@@ -260,12 +261,15 @@ public class AIChatMessageServiceImpl implements AIChatMessageService {
                 .createTime(LocalDateTime.now())
                 .build();
     }
+    */
 
     /**
      * 获取活跃的会话 ID 列表（从 Redis 或数据库）
      */
+    /*
     private List<Long> getActiveChatIds() {
         // TODO: 实现从数据库查询最近活跃的会话
         return List.of();
     }
+    */
 }

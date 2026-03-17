@@ -1,8 +1,5 @@
 package com.example.Config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class LevelConfig {
     //根据经验值获取等级
     public static String getLevelByExp(int exp) {

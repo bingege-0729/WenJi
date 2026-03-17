@@ -40,7 +40,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         String token=authorization.substring(7).trim();
         try {
             // 解析令牌
-            Claims claims= JwtUtils.parseToken(token);
+            JwtUtils.parseToken(token);
             String key=USER_LOGIN_KEY+token;
 
             // 从redis中获取用户数据

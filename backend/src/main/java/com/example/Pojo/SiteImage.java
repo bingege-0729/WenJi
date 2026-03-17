@@ -1,5 +1,7 @@
 package com.example.Pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TableName("site_image")
 public class SiteImage {
+    @TableId(type = IdType.AUTO)
     private Long imageId;
     private String siteId;
     private String imageUrl;

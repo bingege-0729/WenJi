@@ -1,6 +1,5 @@
 package com.example.VO.AI;
 
-import com.example.Pojo.Entity.AI.AIChatSession;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;

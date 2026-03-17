@@ -9,7 +9,13 @@
     <!-- 右上角个人中心 -->
     <template #header-actions>
       <button class="profile-btn" @click="goToProfile" aria-label="个人中心">
-        📜
+        <img v-if="userAvatar.type === 'image'" :src="userAvatar.url" class="header-avatar-img" />
+        <svg v-else width="24" height="24" viewBox="0 0 100 100">
+          <g v-for="(path, index) in selectedIconPaths" :key="index">
+            <path v-if="path.d" :d="path.d" :fill="path.fill" :opacity="path.opacity || 1" />
+            <ellipse v-else-if="path.type === 'ellipse'" :cx="path.cx" :cy="path.cy" :rx="path.rx" :ry="path.ry" :fill="path.fill" />
+          </g>
+        </svg>
       </button>
     </template>
 
@@ -80,6 +86,43 @@ const userStats = ref({
   exp:0,
   maxExp:100
 });
+
+const userAvatar = ref({ type: 'builtin', iconName: 'default' })
+const selectedIconPaths = ref([])
+
+// 默认头像路径 - 青瓷瓶
+const defaultAvatarPaths = [
+  { d: 'M50,10 C30,10 20,30 20,50 L20,70 C20,85 30,90 50,90 C70,90 80,85 80,70 L80,50 C80,30 70,10 50,10 Z', fill: '#A68A64', opacity: '0.9' },
+  { type: 'ellipse', cx: 50, cy: 75, rx: 25, ry: 8, fill: '#8B7355' }
+]
+
+const setSelectedIconPaths = (iconName) => {
+  const icons = {
+    porcelain: [{ d: 'M50,10 C30,10 20,30 20,50 L20,70 C20,85 30,90 50,90 C70,90 80,85 80,70 L80,50 C80,30 70,10 50,10 Z', fill: '#A68A64' }],
+    tea: [{ d: 'M30,40 Q50,20 70,40 L65,70 Q50,80 35,70 Z', fill: '#8B7355' }],
+    scroll: [
+      { d: 'M20,30 h60 v40 h-60 z', fill: '#A68A64', opacity: 0.9 },
+      { d: 'M30,50 a8,8 0 1,0 0,0', fill: 'white' },
+      { d: 'M70,50 a8,8 0 1,0 0,0', fill: 'white' }
+    ],
+    fan: [
+      { d: 'M50,20 A30,30 0 0,1 80,50 A30,30 0 0,1 50,80 L50,20 Z', fill: '#A68A64' },
+      { d: 'M50,20 L40,10 M50,20 L60,10', stroke: '#A68A64', strokeWidth: 4, fill: 'none' }
+    ],
+    architecture: [
+      { d: 'M30,50 h40 v30 h-40 z', fill: '#A68A64' },
+      { d: 'M20,40 h60 v10 h-60 z', fill: '#8B7355' },
+      { d: 'M10,30 h80 v10 h-80 z', fill: '#A68A64' }
+    ],
+    lantern: [
+      { type: 'ellipse', cx: 50, cy: 30, rx: 15, ry: 10, fill: '#A68A64' },
+      { d: 'M35,30 h30 v40 h-30 z', rx: 6, fill: '#A68A64' },
+      { type: 'ellipse', cx: 50, cy: 70, rx: 10, ry: 6, fill: '#8B7355' }
+    ]
+  };
+  selectedIconPaths.value = icons[iconName] || defaultAvatarPaths;
+}
+
 //获取用户信息
 const fetchUserStats = async () => {
   try {
@@ -90,6 +133,17 @@ const fetchUserStats = async () => {
         exp: response.data.experience,
         maxExp: response.data.maxExp || 500
       };
+
+      // 设置头像
+      if (response.data.avatarUrl) {
+        userAvatar.value = { type: 'image', url: response.data.avatarUrl };
+      } else if (response.data.iconName) {
+        userAvatar.value = { type: 'builtin', iconName: response.data.iconName };
+        setSelectedIconPaths(response.data.iconName);
+      } else {
+        userAvatar.value = { type: 'builtin', iconName: 'default' };
+        selectedIconPaths.value = defaultAvatarPaths;
+      }
     }
   } catch (error) {
     ElMessage.error('获取用户信息失败')
@@ -352,13 +406,21 @@ onMounted(() => {
   font-size: 20px;
   color: #a68a64;
   cursor: pointer;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f0ede9;
+  overflow: hidden;
+}
+
+.header-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-btn:hover {

@@ -86,6 +86,32 @@ export function updateUserInfo(data) {
   })
 }
 
+// 获取用户徽章
+export const getUserBadges = () => {
+  return request.get('/badge/myBadges');
+}
+
+// 获取我的旅游博客 (足迹)
+export const getMyTravelBlogs = () => {
+  return request.get('/travel/myBlogs');
+}
+
+// 发布旅游打卡
+export const publishTravelBlog = (data) => {
+  return request.post('/travel/publish', data);
+}
+
+// 上传文件接口
+export const uploadFile = (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return request.post('/common/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+}
+
 //删除用户信息
 export function deleteUserAccount() {
   const userId = getUserIdFromToken();
