@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>17</java.version>
-        
+        <langchain4j.version>1.0.0-beta3</langchain4j.version>
     </properties>
     <dependencies>
         <dependency>
@@ -39,19 +39,19 @@
         <dependency>
            <groupId>dev.langchain4j</groupId>
            <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
-           <version>1.0.0-beta3</version>
+           <version>${langchain4j.version}</version>
         </dependency>
         <!-- 2. 声明式 AI Services 支持 -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-spring-boot-starter</artifactId>
-            <version>1.0.0-beta3</version>
+            <version>${langchain4j.version}</version>
         </dependency>   
         <!-- 3. Reactor Flux 流式响应支持（重要！） -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-reactor</artifactId>
-            <version>1.0.0-beta3</version>
+            <version>${langchain4j.version}</version>
         </dependency>
         <!-- JJWT API -->
         <dependency>
