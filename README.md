@@ -1,6 +1,10 @@
+<div align="center">
+
 # 文迹 (WenJi) - 文化遗产探索App
 
-<div align="center">
+</div>
+
+<div align="center" font-size=">
 
 ![Version](https://img.shields.io/badge/version-1.0.0--beta-blue)
 ![Vue](https://img.shields.io/badge/Vue-3.5-brightgreen)
