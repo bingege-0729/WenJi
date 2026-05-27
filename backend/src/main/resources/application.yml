@@ -2,8 +2,7 @@ spring:
   data:
     redis:
       port: 6379
-      host: 192.168.100.128
-      password: 123321
+      host: localhost
       # 连接池配置
       lettuce:
         pool:
@@ -20,16 +19,23 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
-  ai:
-    openai:
-      base-url: https://dashscope.aliyuncs.com/compatible-mode
-      api-key: ${OPENAI_API_KEY}
-      chat:
-        options:
-          model: qwen-max
-          temperature: 0.8
-          max-tokens: 200
 
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${QWEN_API_KEY}
+      model-name: qwen-plus
+      temperature: 0.8
+      max-tokens: 200
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${QWEN_API_KEY}
+      model-name: qwen-plus
+      temperature: 0.8
+      max-tokens: 200
 logging:
   level:
     org.springframework.ai.chat.client.advisor: debug

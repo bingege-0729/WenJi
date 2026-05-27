@@ -7,9 +7,11 @@ import com.example.Pojo.AIChatMessage;
 import com.example.Pojo.AIChatSession;
 import com.example.Repository.RedisChatMemory;
 import com.example.Service.AIChatMessageService;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.model.openai.internal.chat.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.messages.Message;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ public class AIChatMessageServiceImpl implements AIChatMessageService {
     private final AIChatSessionMapper chatSessionMapper;
     @Autowired
     private RedisChatMemory redisChatMemory;
+
 
     /**
      * 保存消息
@@ -245,7 +248,7 @@ public class AIChatMessageServiceImpl implements AIChatMessageService {
     private int archiveSessionMessages(String sessionId) {
         try {
             // 从 Redis 读取该会话的所有消息
-            List<Message> messages = redisChatMemory.get(sessionId, 100);
+            List<ChatMessage> messages = redisChatMemory.getMessages(sessionId);
 
             if (messages.isEmpty()) {
                 log.debug("会话没有新消息，sessionId: {}", sessionId);
@@ -262,7 +265,7 @@ public class AIChatMessageServiceImpl implements AIChatMessageService {
                 int saved = batchSaveMessages(chatMessages);
                 log.info("归档会话消息成功，sessionId: {}, 保存 {} 条", sessionId, saved);
                 //归档成功后，可以直接从 Redis 中清理旧数据
-                redisChatMemory.clear(sessionId);
+                redisChatMemory.deleteMessages(sessionId);
                 return saved;
             }
         } catch (Exception e) {
@@ -302,11 +305,11 @@ public class AIChatMessageServiceImpl implements AIChatMessageService {
      * @param sessionId 会话 ID
      * @return AIChatMessage
      */
-    private AIChatMessage convertToAIChatMessage(Message message, String sessionId) {
+    private AIChatMessage convertToAIChatMessage(ChatMessage message, String sessionId) {
         return AIChatMessage.builder()
                 .sessionId(sessionId)
-                .role(message.getMessageType().name().toLowerCase())
-                .content(message.getText())
+                .role(message.type().name().toLowerCase())
+                .content(message.toString())
                 .messageType("text")
                 .createTime(LocalDateTime.now())
                 .build();

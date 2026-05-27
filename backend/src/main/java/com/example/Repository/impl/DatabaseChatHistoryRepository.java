@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.Common.Utils.RedisChatHistoryUtils;
 import com.example.Mapper.AIChatSessionMapper;
 import com.example.Pojo.AIChatSession;
-import com.example.Repository.ChatHistoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -24,8 +23,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-
-public class DatabaseChatHistoryRepository implements ChatHistoryRepository {
+public class DatabaseChatHistoryRepository {
 
     @Autowired
     private  StringRedisTemplate redisTemplate;
@@ -45,9 +43,8 @@ public class DatabaseChatHistoryRepository implements ChatHistoryRepository {
 
 
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public void save(String type, String sessionId,Long userId) {
+    public void save(String type, String sessionId, Long userId) {
         //最大重试次数和重试次数间间隔
         int maxRetries = 3;
         int retryCount = 0;
@@ -142,8 +139,6 @@ public class DatabaseChatHistoryRepository implements ChatHistoryRepository {
      * @param type 会话类型
      * @return 会话列表
      */
-    @Override
-
     public List<String> getChatIds(String type) {
         // 获取当前用户ID
         Long userId = getCurrentUserId();
@@ -194,7 +189,6 @@ public class DatabaseChatHistoryRepository implements ChatHistoryRepository {
      * @param sessionId 会话ID
      * @param userId 用户ID
      */
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(String type, String sessionId, Long userId) {
         int maxRetries = 3;

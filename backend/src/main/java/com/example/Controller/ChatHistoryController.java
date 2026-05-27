@@ -3,9 +3,10 @@ package com.example.Controller;
 
 import com.example.Common.Result;
 import com.example.Pojo.AIChatMessage;
+import com.example.Repository.impl.DatabaseChatHistoryRepository;
 import com.example.VO.AI.MessageVO;
 import com.example.VO.AI.ChatSessionVO;
-import com.example.Repository.ChatHistoryRepository;
+
 import com.example.Mapper.AIChatSessionMapper;
 import com.example.Pojo.AIChatSession;
 import com.example.Service.AIChatMessageService;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +35,12 @@ import static com.example.Common.Utils.UersUtils.getCurrentUserId;
 @Tag(name = "AI聊天历史管理", description = "AI聊天历史记录相关接口")
 public class ChatHistoryController {
 
-    private final ChatHistoryRepository chatHistoryRepository;
     private final AIChatMessageService aiChatMessageService;
     private final AIChatSessionMapper chatSessionMapper;
 
+
+    @Autowired
+    private DatabaseChatHistoryRepository databaseChatHistoryRepository;
     /**
      * 获取聊天 ID 列表，根据类型获取所有聊天会话 ID
      * @param type 聊天类型，例如 "text" 或 "image"
@@ -46,7 +50,7 @@ public class ChatHistoryController {
     @GetMapping("/{type}/list")
     public Result<List<String>> getChatIds(@Parameter(description = "聊天类型") @PathVariable("type") String type){
         log.debug("收到获取聊天历史列表请求，type: {}", type);
-        List<String> chatIds = chatHistoryRepository.getChatIds(type);
+        List<String> chatIds = databaseChatHistoryRepository.getChatIds(type);
         log.debug("获取到 {} 个会话 ID", chatIds.size());
         return Result.success(chatIds);
     }
@@ -114,7 +118,7 @@ public class ChatHistoryController {
                 return Result.error("未登录", null);
             }
 
-            chatHistoryRepository.delete("chat", sessionId, userId);
+            databaseChatHistoryRepository.delete("chat", sessionId, userId);
             return Result.success(null);
         } catch (Exception e) {
             log.error("删除会话失败，sessionId: {}", sessionId, e);

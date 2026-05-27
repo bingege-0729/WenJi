@@ -21,24 +21,26 @@ import static com.example.Common.Constants.RedisConstants.AI_CHAT_HISTORY_PREFIX
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RedisChatMemory implements ChatMemoryStore {
+public class RedisChatMemoryStore implements ChatMemoryStore {
 
-    private final StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
     public List<ChatMessage> getMessages(Object memoryId) {
         String key = AI_CHAT_HISTORY_PREFIX + memoryId;
         try {
-            String json = stringRedisTemplate.opsForValue().get(key);
+            List<String> jsonList = redisTemplate.opsForList().range(key, 0, -1);
             
-            if (json == null || json.isEmpty()) {
+            if (jsonList == null || jsonList.isEmpty()) {
                 return List.of();
             }
 
-            List<ChatMessage> messages = ChatMessageDeserializer.messagesFromJson(json);
-            
+            List<ChatMessage> messages = jsonList.stream()
+                    .map(ChatMessageDeserializer::messageFromJson)
+                    .toList();
+
             // 刷新 TTL
-            stringRedisTemplate.expire(key, AI_CHAT_HISTORY_EXPIRE, TimeUnit.MINUTES);
+            redisTemplate.expire(key, AI_CHAT_HISTORY_EXPIRE, TimeUnit.MINUTES);
             
             log.debug("从 Redis 获取消息，memoryId: {}, 数量: {}", memoryId, messages.size());
             return messages;
@@ -52,13 +54,20 @@ public class RedisChatMemory implements ChatMemoryStore {
     public void updateMessages(Object memoryId, List<ChatMessage> messages) {
         String key = AI_CHAT_HISTORY_PREFIX + memoryId;
         try {
-            if (messages == null || messages.isEmpty()) {
-                stringRedisTemplate.delete(key);
-                return;
+            // 序列化消息
+            List<String> jsonList = messages.stream()
+                    .map(ChatMessageSerializer::messageToJson)
+                    .toList();
+
+            // 先删除旧数据，再写入新数据（保证一致性）
+            redisTemplate.delete(key);
+            
+            if (!jsonList.isEmpty()) {
+                redisTemplate.opsForList().rightPushAll(key, jsonList);
             }
 
-            String json = ChatMessageSerializer.messagesToJson(messages);
-            stringRedisTemplate.opsForValue().set(key, json, AI_CHAT_HISTORY_EXPIRE, TimeUnit.MINUTES);
+            // 设置过期时间
+            redisTemplate.expire(key, AI_CHAT_HISTORY_EXPIRE, TimeUnit.MINUTES);
             
             log.debug("更新消息到 Redis，memoryId: {}, 数量: {}", memoryId, messages.size());
         } catch (Exception e) {
@@ -70,7 +79,7 @@ public class RedisChatMemory implements ChatMemoryStore {
     public void deleteMessages(Object memoryId) {
         String key = AI_CHAT_HISTORY_PREFIX + memoryId;
         try {
-            stringRedisTemplate.delete(key);
+            redisTemplate.delete(key);
             log.debug("删除消息，memoryId: {}", memoryId);
         } catch (Exception e) {
             log.error("删除消息失败，memoryId: {}", memoryId, e);
