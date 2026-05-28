@@ -46,7 +46,7 @@ public class RagKnowledgeController {
             return "知识入库成功";
         } catch (Exception e) {
             log.error("知识入库失败", e);
-            return "知识入库失败: " + e.getMessage();
+            return "知识入库失败";
         }
     }
 
