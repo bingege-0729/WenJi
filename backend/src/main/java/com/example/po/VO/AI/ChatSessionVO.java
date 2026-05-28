@@ -1,4 +1,4 @@
-package com.example.VO.AI;
+package com.example.po.VO.AI;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

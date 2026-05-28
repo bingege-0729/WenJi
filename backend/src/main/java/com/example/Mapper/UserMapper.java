@@ -2,9 +2,9 @@ package com.example.Mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.DTO.UserUpdateDTO;
+import com.example.po.DTO.UserUpdateDTO;
 import com.example.Pojo.User;
-import com.example.VO.UserInfoVO;
+import com.example.po.VO.UserInfoVO;
 import org.apache.ibatis.annotations.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;

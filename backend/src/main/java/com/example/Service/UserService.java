@@ -1,9 +1,9 @@
 package com.example.Service;
 
 import com.example.Common.Result;
-import com.example.DTO.LoginFormDTO;
-import com.example.DTO.UserUpdateDTO;
-import com.example.VO.UserInfoVO;
+import com.example.po.DTO.LoginFormDTO;
+import com.example.po.DTO.UserUpdateDTO;
+import com.example.po.VO.UserInfoVO;
 
 public interface UserService {
     /* *

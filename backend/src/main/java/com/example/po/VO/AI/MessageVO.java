@@ -1,4 +1,4 @@
-package com.example.VO.AI;
+package com.example.po.VO.AI;
 
 import com.example.Pojo.AIChatMessage;
 import lombok.Data;

@@ -1,10 +1,10 @@
 package com.example.Controller;
 
 import com.example.Common.Result;
-import com.example.DTO.LoginFormDTO;
-import com.example.DTO.UserUpdateDTO;
+import com.example.po.DTO.LoginFormDTO;
+import com.example.po.DTO.UserUpdateDTO;
 import com.example.Service.UserService;
-import com.example.VO.UserInfoVO;
+import com.example.po.VO.UserInfoVO;
 import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -36,6 +36,7 @@ public class ChatController {
     private final ConsultantService consultantService;
     private final DatabaseChatHistoryRepository databaseChatHistoryRepository;
     private final AIChatMessageService chatMessageService;
+    private final com.example.Service.aiService.RagEnhancedChatService ragChatService;
 
     /**
      * AI 聊天接口（支持文本和多模态，流式响应）
@@ -59,7 +60,6 @@ public class ChatController {
             Long userId = getCurrentUserId();
             if (userId != null) {
                 databaseChatHistoryRepository.save("chat", chatId, userId);
-
                 AIChatMessage userMessage = AIChatMessage.builder()
                         .sessionId(chatId)
                         .role("user")
@@ -78,7 +78,8 @@ public class ChatController {
             return chatWithImages(chatId, prompt, images);
         } else {
             String finalChatId = chatId;
-            return consultantService.chatStream(chatId, prompt)
+            // 使用 RAG 增强聊天（优先查 Redis，未命中降级为普通 LLM）
+            return ragChatService.chatWithRAG(chatId, prompt)
                     .doOnNext(chunk -> log.debug("收到 chunk: {}", chunk))
                     .doOnComplete(() -> log.info("AI 回复完成，sessionId: {}", finalChatId));
         }

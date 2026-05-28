@@ -1,7 +1,7 @@
 package com.example;
 
 import com.example.Common.Result;
-import com.example.DTO.LoginFormDTO;
+import com.example.po.DTO.LoginFormDTO;
 import com.example.Service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

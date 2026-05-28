@@ -4,8 +4,8 @@ package com.example.Controller;
 import com.example.Common.Result;
 import com.example.Pojo.AIChatMessage;
 import com.example.Repository.impl.DatabaseChatHistoryRepository;
-import com.example.VO.AI.MessageVO;
-import com.example.VO.AI.ChatSessionVO;
+import com.example.po.VO.AI.MessageVO;
+import com.example.po.VO.AI.ChatSessionVO;
 
 import com.example.Mapper.AIChatSessionMapper;
 import com.example.Pojo.AIChatSession;

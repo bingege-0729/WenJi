@@ -57,7 +57,7 @@ services:
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
       SPRING_REDIS_PASSWORD: 123321
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-your-api-key}
+      OPENAI_API_KEY: ${QWEN-API-KEY}
     volumes:
       - uploads_data:/app/uploads
     ports:

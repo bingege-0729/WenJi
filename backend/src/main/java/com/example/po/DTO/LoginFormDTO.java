@@ -1,4 +1,4 @@
-package com.example.DTO;
+package com.example.po.DTO;
 
 import lombok.Data;
 import javax.validation.constraints.NotBlank;

@@ -22,4 +22,10 @@ public class RedisConstants {
     
     // 发布游记锁过期时间（秒）
     public static final long BLOG_LOCK_EXPIRE = 10;
+
+    // 相似度阈值：高于此值认为 Redis 命中
+    public static final double HIGH_SIMILARITY_THRESHOLD = 0.85;
+
+    // 最低相似度阈值：低于此值的知识不用于增强
+    public static final double MIN_SIMILARITY_THRESHOLD = 0.6;
 }
